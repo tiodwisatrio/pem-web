@@ -1,7 +1,39 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 
 const Login = () => {
+  const [inputs, setInputs] = useState({
+    username: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("user-info")) {
+      navigate("/home");
+    }
+  })
+
+  const handleChange = (e) => {
+    setInputs((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+
+  const handleSubmit = async () => {
+    const { data } = await axios.post("http://localhost:8080/api/login", inputs);
+    localStorage.setItem("user-info", JSON.stringify(data));
+    navigate("/home");
+
+  }
+
+  // console.log(inputs);
+
   return (
     <>
       <div className="flex items-center justify-center flex-col w-full h-full">
@@ -15,6 +47,8 @@ const Login = () => {
             </label>
             <input
               required
+              name="username"
+              onChange={handleChange}
               type="text"
               autoComplete="off"
               placeholder="username..."
@@ -27,13 +61,18 @@ const Login = () => {
             </label>
             <input
               required
+              name="password"
+              onChange={handleChange}
               type="password"
               autoComplete="off"
               placeholder="password..."
               className="placeholder:text-[13px] text-[13px] px-2 py-2 rounded-sm text-teal-600 border focus:outline-none focus:border-teal-500 shadow-sm"
             />
           </div>
-          <button className="mt-4 bg-teal-600 px-3 py-2 text-[14px] text-white font-semibold rounded cursor-pointer hover:bg-teal-700 transition-all">
+          <button
+            onClick={handleSubmit}
+            className="mt-4 bg-teal-600 px-3 py-2 text-[14px] text-white font-semibold rounded cursor-pointer hover:bg-teal-700 transition-all"
+          >
             Login
           </button>
 

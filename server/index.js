@@ -3,7 +3,7 @@ const app = express();
 import { db } from "./db.js";
 import cors from "cors";
 import bodyParser from "body-parser";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 const PORT = 8080;
 
 app.use(cors());
@@ -14,32 +14,34 @@ app.get("/", (req, res) => {
   res.json("HELLO FROM EXPRESS!");
 });
 
-// app.get("/test", (req, res) => {
-//   const sqlView = "SELECT * FROM users";
-//   db.query(sqlView, (err, result) => {
-//     if (err) {
-//       res.send("ERROR");
-//     } else {
-//       res.send("SUCCESS CONNECTED");
-//     }
-//   });
-// });
 
 // * REGISTER LOGIC
 app.post("/api/register", (req, res) => {
   const { nama, tanggal_lahir, username, password } = req.body;
-
-  //Hashing password dan membuat user baru
-  const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(password, salt);
-
-  
   const sqlInsert =
     "INSERT INTO users (nama, tanggal_lahir, username, password) VALUES (?,?,?,?)";
   const values = [nama, tanggal_lahir, username, hash];
   db.query(sqlInsert, values, (err, result) => {
     if (err) {
       console.log(err);
+    }
+  });
+});
+
+// * LOGIN LOGIC
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+  const sqlLogin = "SELECT * FROM users WHERE username = ? AND password = ?";
+  const values = [username, password];
+  db.query(sqlLogin, values, (err, result) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      if (result.length > 0) {
+        res.status(200).send(result[0]);
+      } else {
+        res.status(400).send("Username atau password salah");
+      }
     }
   });
 });
