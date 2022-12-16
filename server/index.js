@@ -46,6 +46,14 @@ app.post("/api/login", (req, res) => {
   });
 });
 
+// * MENAMPILKAN DATA USERS
+app.get('/api/home', (req, res) => {
+  sqlGet = "SELECT * FROM users";
+  db.query(sqlGet, (err, result) => {
+    res.send(result);
+  })
+})
+
 
 // * MENJALANKAN SERVER
 app.listen(PORT, () => {
