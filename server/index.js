@@ -3,7 +3,6 @@ const app = express();
 import { db } from "./db.js";
 import cors from "cors";
 import bodyParser from "body-parser";
-// import bcrypt from "bcryptjs";
 const PORT = 8080;
 
 app.use(cors());
@@ -20,7 +19,7 @@ app.post("/api/register", (req, res) => {
   const { nama, tanggal_lahir, username, password } = req.body;
   const sqlInsert =
     "INSERT INTO users (nama, tanggal_lahir, username, password) VALUES (?,?,?,?)";
-  const values = [nama, tanggal_lahir, username, hash];
+  const values = [nama, tanggal_lahir, username, password];
   db.query(sqlInsert, values, (err, result) => {
     if (err) {
       console.log(err);
@@ -47,7 +46,7 @@ app.post("/api/login", (req, res) => {
 });
 
 // * MENAMPILKAN DATA USERS
-app.get("/api/home", (req, res) => {
+app.get("/api/users", (req, res) => {
   const sqlGet = "SELECT * FROM users";
   db.query(sqlGet, (error, result) => {
     res.send(result);
