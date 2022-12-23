@@ -6,7 +6,7 @@ import axios from "axios";
 const Home = () => {
   const [data, setData] = useState([]);
   const loadData = async () => {
-    const response = await axios.get("http://localhost:8080/api/home");
+    const response = await axios.get("http://localhost:8080/api/users");
     setData(response.data);
   };
 
@@ -30,6 +30,16 @@ const Home = () => {
     localStorage.clear();
     navigate("/");
   };
+
+  // Fungsi untuk menghapus data user berdasarkan id
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure want to delete this user?")) {
+      axios.delete(`http://localhost:8080/api/delete/${id}`);
+      setTimeout(() => navigate(), 100);
+    } else {
+      setTimeout(() => navigate(), 100);
+    }
+  }
 
   return (
     <>
@@ -83,6 +93,7 @@ const Home = () => {
                         <span className="mx-2"></span>
                         <Link
                           to={`/delete/${item.id}`}
+                          onClick={() => handleDelete(item.id)}
                           className="bg-rose-600 text-white rounded px-5 py-3 border-none"
                         >
                           Delete

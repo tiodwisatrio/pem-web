@@ -53,6 +53,43 @@ app.get("/api/users", (req, res) => {
   });
 });
 
+// * MENGHAPUS DATA USERS
+app.delete("/api/delete/:id", (req, res) => {
+  const {id} = req.params;
+  const sqlDelete = "DELETE FROM users WHERE id = ?";
+  db.query(sqlDelete, id, (err, result) => {
+    if(err) {
+      console.log(err);
+    }
+  })
+})
+
+// * MENGUBAH DATA USERS (UPDATE)
+app.get('/api/get/:id', (req, res) => {
+  const {id} = req.params;
+  const sqlGet = "SELECT * FROM users WHERE id = ?";
+  db.query(sqlGet, id, (err, result) => {
+    if(err) {
+      console.log(err)
+    }
+    res.send(result)
+  })
+})
+
+app.put("/api/update/:id", (req, res) => {
+  const {id} = req.params;
+  const {nama, tanggal_lahir, username, password} = req.body;
+  const sqlUpdate = "UPDATE users SET nama = ?, tanggal_lahir = ?, username = ?, password = ? WHERE id = ?";
+  const values = [nama, tanggal_lahir, username, password, id];
+  db.query(sqlUpdate, values, (err, result) => {
+    if(err) {
+      console.log(err)
+    }
+    res.send(result)
+
+  })
+})
+
 
 // * MENJALANKAN SERVER
 app.listen(PORT, () => {
